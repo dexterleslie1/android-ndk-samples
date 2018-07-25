@@ -12,6 +12,7 @@ android {
         ndk{
             // 指定生成apk时，jni库名称，否则会默认在生成apk中重命名为libapp.so
             moduleName "hellojni"
+            ldLibs "log"
         }
     }
     buildTypes {
