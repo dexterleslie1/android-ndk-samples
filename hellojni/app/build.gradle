@@ -20,13 +20,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    sourceSets {
-        main {
-            // 原文为jni.srcDirs = []，但是发现使用[]时，as运行卡顿，修改为''恢复，
-            // 另外，建议这里直接使用'libs'目录，因为当使用其他包有.so文件时，一般习惯也是直接拷贝进入libs目录(比如百度地图的.so文件)
-            jniLibs.srcDirs=['libs']
-        }
-    }
 }
 
 dependencies {
