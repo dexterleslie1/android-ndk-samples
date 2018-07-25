@@ -29,8 +29,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // 设置textViewHello文本
-        HelloJni helloJni=new HelloJni();
-        String helloString=helloJni.stringFromJNI();
+        String helloString=HelloJni.stringFromJNI();
         TextView textViewHello=findViewById(R.id.textViewHello);
         textViewHello.setText(helloString);
     }

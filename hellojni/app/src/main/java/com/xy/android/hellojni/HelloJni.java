@@ -8,5 +8,5 @@ public class HelloJni {
         System.loadLibrary("hellojni");
     }
 
-    public native String stringFromJNI();
+    public static native String stringFromJNI();
 }
