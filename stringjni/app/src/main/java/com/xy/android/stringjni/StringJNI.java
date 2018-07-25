@@ -8,16 +8,18 @@ public class StringJNI {
         System.loadLibrary("stringjni");
     }
 
-    /**
-     * 调用JNIEnv->NewString方法
-     * @return
-     */
-    public static native String newString();
+    public static native void printPrimitiveType();
 
     /**
-     * 调用JNIEnv->GetStringLength方法
+     * 调用JNIEnv->NewStringUTF方法
+     * @return
+     */
+    public static native String newStringUTF();
+
+    /**
+     * 调用JNIEnv->GetStringUTFLength方法
      * @param str
      * @return
      */
-    public static native int getStringLength(String str);
+    public static native int getStringUTFLength(String str);
 }

@@ -27,8 +27,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        int stringLength=StringJNI.getStringLength("hello");
-        System.out.println(stringLength);
+        int stringLength=StringJNI.getStringUTFLength("hello");
+        System.out.println("StringUTFLength="+stringLength);
+        StringJNI.printPrimitiveType();
+        String str=StringJNI.newStringUTF();
+        System.out.println(str);
     }
 
     @Override
