@@ -30,14 +30,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        Object []objArray=new Object[10];
-//        int size = ArrayJNI.getArrayLength(objArray);
-//        System.out.println(size);
+        Object []objArray=new Object[10];
+        int size = ArrayJNI.getArrayLength(objArray);
+        System.out.println(size);
         int []intArray=new int[]{1,2,3,4,5};
-        for(int i=0;i<1000000000;i++) {
-            ArrayJNI.increaseIntArrayElements(intArray);
-//            System.out.println(intArray);
-        }
+        ArrayJNI.increaseIntArrayElements(intArray);
+        System.out.println(intArray);
     }
 
     @Override
