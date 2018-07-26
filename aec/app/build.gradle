@@ -9,6 +9,13 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        ndk{
+            // 指定生成apk时，jni库名称，否则会默认在生成apk中重命名为libapp.so
+            moduleName "speexjni"
+            ldLibs "log"
+            cFlags ="-DFIXED_POINT -DUSE_KISS_FFT -DEXPORT=\"\" -UHAVE_CONFIG_H"
+            cFlags += " -I" + file("src/main/jni/include").absolutePath
+        }
     }
     buildTypes {
         release {

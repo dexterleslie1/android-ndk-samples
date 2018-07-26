@@ -27,7 +27,7 @@ public class AcousticEchoCancellationTest {
      * 使用android emulator测试以下代码会出现严重回声
      */
     @Test
-    public void aec_test() {
+    public void echo_test() {
         // 开启扬声器
         AudioManager audioManager=(AudioManager) InstrumentationRegistry.getTargetContext().getSystemService(Context.AUDIO_SERVICE);
         audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
@@ -57,7 +57,7 @@ public class AcousticEchoCancellationTest {
             @Override
             public void run() {
                 boolean playStart = false;
-                short data [] = new short[640];
+                short data [] = new short[160];
                 int	bufferRead;
                 while (true) {
                     bufferRead = audioRecord.read(data, 0, data.length);
@@ -80,6 +80,82 @@ public class AcousticEchoCancellationTest {
         thread.start();
 
         System.out.println("");
+
+        audioRecord.stop();
+        audioRecord.release();
+        audioPlay.stop();
+        audioPlay.release();
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void aec_test() throws InterruptedException {
+        // 开启扬声器
+        AudioManager audioManager=(AudioManager) InstrumentationRegistry.getTargetContext().getSystemService(Context.AUDIO_SERVICE);
+        audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
+        audioManager.setSpeakerphoneOn(true);
+
+        final AudioTrack audioPlay ;
+        final AudioRecord audioRecord ;
+        Thread thread;
+
+        final int frequency = 8000;
+        final int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
+        final LinkedList<short[]> listAudio = new LinkedList<short[]>();
+
+        int bufferSize = android.media.AudioTrack.getMinBufferSize(frequency, AudioFormat.CHANNEL_OUT_MONO, audioEncoding);
+        int bufferSizeRec = android.media.AudioRecord.getMinBufferSize(frequency, AudioFormat.CHANNEL_IN_MONO, audioEncoding);
+        audioRecord = new AudioRecord(
+                MediaRecorder.AudioSource.VOICE_COMMUNICATION , frequency, AudioFormat.CHANNEL_IN_MONO,
+                audioEncoding,	bufferSizeRec );
+
+        audioRecord.startRecording();
+
+        audioPlay = new AudioTrack(AudioManager.STREAM_VOICE_CALL, frequency, AudioFormat.CHANNEL_OUT_MONO, audioEncoding, bufferSize,
+                AudioTrack.MODE_STREAM,audioRecord.getAudioSessionId());
+
+        SpeexJNI.init();
+
+        thread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                boolean playStart = false;
+                short data [] = new short[160];
+                short echoData[]=null;
+                int	bufferRead;
+                while (true) {
+                    if (playStart) {
+                        echoData = listAudio.removeFirst();
+                        audioPlay.write(echoData, 0, echoData.length);
+                    }
+                    else {
+                        if (listAudio.size() > 5) {
+                            playStart = true;
+                            audioPlay.play();
+                        }
+                    }
+                    bufferRead = audioRecord.read(data, 0, data.length);
+                    short out [] = new short[bufferRead];
+                    System.arraycopy(data, 0, out, 0, bufferRead);
+
+//                    if(echoData!=null){
+//                        short []out1=new short[160];
+//                        SpeexJNI.cancellation(out,echoData,out1);
+//                        listAudio.add(out1);
+//                    }else {
+                        listAudio.add(out);
+//                    }
+                }
+            }
+        });
+        thread.start();
+
+        System.out.println("");
+
+        SpeexJNI.destroy();
 
         audioRecord.stop();
         audioRecord.release();
